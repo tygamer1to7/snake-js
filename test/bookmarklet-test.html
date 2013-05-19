@@ -1,0 +1,33 @@
+<a href="javascript:(function(){
+	if (!($ = window.jQuery)) {
+		var script = document.createElement('script');
+		script.src = 'http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js'
+		script.onload = runSnake;
+		document.body.appendChild(script);
+	} else { runSnake(); }
+
+	function runSnake() { 
+		var snakeJS = document.createElement('script');
+		snakeJS.src = 'https://dl.dropboxusercontent.com/s/39imf2zpav3c7el/snake.js';
+		snakeJS.onload = function() { Snake.run(); };
+		document.body.appendChild(snakeJS);
+	}
+})();">test</a>
+
+<a href="javascript:(function(){function t(){var e=document.createElement('script');e.src='https://raw.github.com/jlkravitz/snake-js/master/snake.js';e.onload=function(){Snake.run()};document.body.appendChild(e)}if(!($=window.jQuery)){var e=document.createElement('script');e.src='http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js';e.onload=t;document.body.appendChild(e)}else{t()}})()">test2</a>
+
+<a href="javascript:((function() {
+        function runSnake() {
+                var snakeJS = document.createElement('script');
+                snakeJS.src = 'https://raw.github.com/jlkravitz/snake-js/master/snake.js';
+                snakeJS.onload = function() { Snake.run() };
+                document.body.appendChild(snakeJS)
+        }
+
+        if(!($ = window.jQuery)) {
+                var jquery = document.createElement('script');
+                jquery.src = 'http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js';
+                jquery.onload = runSnake;
+                document.body.appendChild(jquery);
+        } else { runSnake() }
+})())">test3</a>

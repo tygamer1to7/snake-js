@@ -23,6 +23,9 @@
             this.food = this.getRandomLocation();
         },
 
+        /**
+         * Gets random location in window.
+         */
         getRandomLocation: function() {
             return new Location(getRandomInt(0, getNumRows() - 1), 
                                 getRandomInt(0, getNumCols() - 1));
@@ -47,7 +50,7 @@
          * @return {bool} whether a collision has occured
          */
         checkCollision: function() {
-            var head = this.snake[this.snake.length - 1];
+            var head = this.getHead();
             return head.row == food.row && head.col == food.col;
         },
 
@@ -56,11 +59,10 @@
          * @param  {number} currDir id of snake's dirrection
          */
         update: function(currDir) {
+            this.snake.push(this.getNewHead(currDir));
             if (this.checkCollision()) {
-                this.placeFood();
-                this.snake.push(this.getNewHead(currDir));             
+                this.placeFood();            
             } else {
-                this.snake[this.snake.length] = this.getNewHead(currDir);
                 this.snake.shift();
             }
         },
@@ -164,6 +166,10 @@
             this.drawRect(food);
         },
 
+        /**
+         * Draws a TILE_SIZE by TILE_SIZE rectangle on the canvas.
+         * @param  {Location} loc location of the rectangle to be drawn
+         */
         drawRect: function(loc) {
             this.ctx.fillRect(
                 loc.col * TILE_SIZE, 
@@ -185,22 +191,17 @@
         },
 
         /**
-         * Log key pressed if arrow keys.
+         * Logs arrow-key key presses.
          */
         onKeyDown: function(e) {
-            switch (e.keyCode) {
-                case (KEYS["UP"]):
-                    this.setDir(DIRS["UP"]);
-                    break;
-                case (KEYS["DOWN"]):
-                    this.setDir(DIRS["DOWN"]);
-                    break;
-                case (KEYS["LEFT"]):
-                    this.setDir(DIRS["LEFT"]);
-                    break;
-                case (KEYS["RIGHT"]):
-                    this.setDir(DIRS["RIGHT"]);
-                    break;
+            if (e.keyCode == KEYS["UP"]) {
+                this.setDir(DIRS["UP"]);
+            } else if (e.keyCode == KEYS["DOWN"]) {
+                this.setDir(DIRS["DOWN"]);
+            } else if (e.keyCode == KEYS["LEFT"]) {
+                this.setDir(DIRS["LEFT"]);
+            } else if (e.keyCode == KEYS["RIGHT"]) {
+                this.setDir(DIRS["RIGHT"]);
             }
         },
 

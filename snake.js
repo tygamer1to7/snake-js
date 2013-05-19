@@ -1,9 +1,3 @@
-/*
- *  Project: Snake
- *  Description: Plays snake on the window object.
- *  Author: Joshua Kravitz
- */
-
 (function() {
     /**
      * Encapsulates a grid location.

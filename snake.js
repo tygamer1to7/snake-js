@@ -2,7 +2,6 @@
  *  Project: Snake
  *  Description: Plays snake on the window object.
  *  Author: Joshua Kravitz
- *  License: N/A
  */
 
 (function() {
@@ -125,7 +124,7 @@
             canvas.height = window.innerHeight;
             canvas.style.cssText = CANVAS_CSS;
 
-            $(window).on('resize', $.proxy(this.onResize, this));
+            $(window).resize($.proxy(this.onResize, this));
 
             return canvas;
         },
@@ -180,7 +179,7 @@
             SnakeWorld.init();
 
             this.lastTwoDirs = [null, DIRS["RIGHT"]]; // make snake start out going right
-            $(window).on('keydown', $.proxy(this.onKeyDown, this));
+            $(window).keydown($.proxy(this.onKeyDown, this));
 
             this.updateFrame();
         },

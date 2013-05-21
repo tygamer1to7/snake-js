@@ -7,6 +7,15 @@
         this.col = col;
     }
 
+    /**
+     * Returns whether two Location objects are equal (both row and column are equal)
+     * @param  {Location} that the Location object to compare it to
+     * @return {boolean}      whether or not they are equal
+     */
+    Location.prototype.equals = function(that) {
+        return this.row == that.row && this.col == that.col;
+    }
+
     var SnakeWorld = {
         init: function() {
             this.snake = [this.getRandomLocation()];
@@ -40,12 +49,25 @@
         },
 
         /**
-         * Checks if there is a food/snake collision.
-         * @return {bool} whether a collision has occured
+         * Checks if there is a snake/snake collision.
+         * @return {boolean} whether a collision has occured
          */
-        checkCollision: function() {
+        checkSnakeCollision: function() {
             var head = this.getHead();
-            return head.row == food.row && head.col == food.col;
+            for (var i = 0; i < this.snake.length - 1; ++i) {
+                if (head.equals(this.snake[i])) {
+                    return true;
+                }
+            }
+            return false;
+        },
+
+        /**
+         * Checks if there is a food/snake collision.
+         * @return {boolean} whether a collision has occured
+         */
+        checkFoodCollision: function() {
+            return this.getHead().equals(this.food);
         },
 
         /**
@@ -54,8 +76,10 @@
          */
         update: function(currDir) {
             this.snake.push(this.getNewHead(currDir));
-            if (this.checkCollision()) {
+            if (this.checkFoodCollision()) {
                 this.placeFood();            
+            } else if (this.checkSnakeCollision()) {
+                Snake.endGame();
             } else {
                 this.snake.shift();
             }
@@ -105,8 +129,7 @@
          * Stores the canvas and context in member variables.
          */
         setupCanvas: function() {
-            this.canvas = this.createNewCanvas();
-            $(document.body).append(this.canvas);
+            this.addCanvas();
             this.ctx = this.canvas.getContext('2d');
         },
 
@@ -114,21 +137,21 @@
          * Sets up an html5 canvas element so that it stays fixed
          * on the page and changes size when the window is resized.
          */
-        createNewCanvas: function() {
-            var canvas = document.createElement('canvas');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            canvas.style.cssText = CANVAS_CSS;
+        addCanvas: function() {
+            this.canvas = document.createElement('canvas');
+            this.canvas.id = 'unique-snake-canvas-id';
+            this.fitCanvasToWindow();
+            this.canvas.style.cssText = CANVAS_CSS;
 
-            $(window).resize($.proxy(this.onResize, this));
+            $(window).resize($.proxy(this.fitCanvasToWindow, this));
 
-            return canvas;
+            $(document.body).append(this.canvas);
         },
 
         /**
          * Resizes the canvas to fit the full screen (called when window is resized).
          */
-        onResize: function() {
+        fitCanvasToWindow: function() {
             this.canvas.width = window.innerWidth;
             this.canvas.height = window.innerHeight;
         },
@@ -170,6 +193,22 @@
                 loc.row * TILE_SIZE, 
                 TILE_SIZE, TILE_SIZE
             );
+        },
+
+        drawLoseScreen: function() {
+            var message = "You lose!";
+            this.ctx.font = 'bold 40pt Calibri';
+            this.ctx.textAlign = 'center';
+            this.ctx.textBaseline = 'middle';
+            this.ctx.fillText(message, this.canvas.width / 2, this.canvas.height / 2);
+        },
+
+        /**
+         * Takes down graphics and related key listeners.
+         */
+        takeDown: function() {
+            $('#unique-snake-canvas-id').remove();
+            $(window).unbind('resize', $.proxy(this.fitCanvasToWindow, this));
         }
     };
 
@@ -181,6 +220,7 @@
             this.lastTwoDirs = [null, DIRS["RIGHT"]]; // make snake start out going right
             $(window).keydown($.proxy(this.onKeyDown, this));
 
+            this.playing = true;
             this.updateFrame();
         },
 
@@ -217,8 +257,24 @@
             SnakeGraphics.draw();
             SnakeWorld.update(this.lastTwoDirs[1]);
             // requestAnimationFrame($.proxy(this.updateFrame, this));
-            setTimeout($.proxy(this.updateFrame, this), DELAY);
+            if (this.playing) {
+                this.timerId = setTimeout($.proxy(this.updateFrame, this), DELAY);
+            }
         },
+
+        /**
+         * Ends game of snake. Removes canvas and unbinds key listeners.
+         */
+        endGame: function() {
+            this.playing = false;
+            SnakeGraphics.drawLoseScreen();
+
+            // for now, show lose message, and then end game 2 seconds later.
+            window.setTimeout(function() {
+                SnakeGraphics.takeDown();
+                $(window).unbind('keydown', $.proxy(this.onKeyDown, this));
+            }, 3000);
+        }
     };
 
 
@@ -238,11 +294,11 @@
      * Add 1 so that no space is left in ends of window when snake moves across.
      */
     function getNumRows() {
-        return Math.floor($(window).height() / TILE_SIZE) + 1;
+        return Math.floor($(window).height() / TILE_SIZE);
     }
 
     function getNumCols() {
-        return Math.floor($(window).width() / TILE_SIZE) + 1;
+        return Math.floor($(window).width() / TILE_SIZE);
     }
 
     

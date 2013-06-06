@@ -228,6 +228,7 @@
          * Logs arrow-key key presses.
          */
         onKeyDown: function(e) {
+			e.preventDefault();
             if (e.keyCode == KEYS["UP"]) {
                 this.setDir(DIRS["UP"]);
             } else if (e.keyCode == KEYS["DOWN"]) {
@@ -273,6 +274,7 @@
             window.setTimeout(function() {
                 SnakeGraphics.takeDown();
                 $(window).unbind('keydown', $.proxy(this.onKeyDown, this));
+                delete window.Snake;
             }, 3000);
         }
     };

@@ -14,7 +14,7 @@
      */
     Location.prototype.equals = function(that) {
         return this.row == that.row && this.col == that.col;
-    }
+    };
 
     var SnakeWorld = {
         init: function() {
@@ -30,7 +30,7 @@
          * Gets random location in window.
          */
         getRandomLocation: function() {
-            return new Location(getRandomInt(0, getNumRows() - 1), 
+            return new Location(getRandomInt(0, getNumRows() - 1),
                                 getRandomInt(0, getNumCols() - 1));
         },
 
@@ -77,7 +77,8 @@
         update: function(currDir) {
             this.snake.push(this.getNewHead(currDir));
             if (this.checkFoodCollision()) {
-                this.placeFood();            
+                this.placeFood();
+                Snake.incrementScore();
             } else if (this.checkSnakeCollision()) {
                 Snake.endGame();
             } else {
@@ -149,11 +150,13 @@
         },
 
         /**
-         * Resizes the canvas to fit the full screen (called when window is resized).
+         * Resizes the canvas to fit the full screen (called when window 
+         * is resized). jQuery's innerWidth/innerHeight functions subtract
+         * the width of the scrollbar, which we want.
          */
         fitCanvasToWindow: function() {
-            this.canvas.width = window.innerWidth;
-            this.canvas.height = window.innerHeight;
+            this.canvas.width = $(window).innerWidth();
+            this.canvas.height = $(window).innerHeight();
         },
 
         /**
@@ -163,6 +166,7 @@
             this.clearCanvas();
             this.drawSnake();
             this.drawFood();
+            this.drawScore();
         },
 
         clearCanvas: function() {
@@ -183,24 +187,49 @@
             this.drawRect(food);
         },
 
+        drawScore: function() {
+            this.drawText({
+                message: 'Score: ' + Snake.getScore(),
+                x: this.canvas.width,
+                y: this.canvas.height,
+                font: 'bold 25pt Calibri',
+                color: 'red',
+                align: 'right',
+                baseline: 'bottom'
+            });
+        },
+
         /**
          * Draws a TILE_SIZE by TILE_SIZE rectangle on the canvas.
          * @param  {Location} loc location of the rectangle to be drawn
          */
         drawRect: function(loc) {
             this.ctx.fillRect(
-                loc.col * TILE_SIZE, 
-                loc.row * TILE_SIZE, 
+                loc.col * TILE_SIZE,
+                loc.row * TILE_SIZE,
                 TILE_SIZE, TILE_SIZE
             );
         },
 
         drawLoseScreen: function() {
-            var message = "You lose!";
-            this.ctx.font = 'bold 40pt Calibri';
-            this.ctx.textAlign = 'center';
-            this.ctx.textBaseline = 'middle';
-            this.ctx.fillText(message, this.canvas.width / 2, this.canvas.height / 2);
+            this.drawText({
+                message: 'You lose!',
+                x: this.canvas.width / 2,
+                y: this.canvas.height / 2,
+                font: 'bold 40pt Calibri',
+                color: 'red',
+                align: 'center',
+                baseline: 'middle'
+            });
+        },
+
+        /* Draws text on the canvas using the specified options. */
+        drawText: function(options) {
+            this.ctx.font = options.font;
+            this.ctx.fillStyle = options.color;
+            this.ctx.textAlign = options.align;
+            this.ctx.textBaseline = options.baseline;
+            this.ctx.fillText(options.message, options.x, options.y);
         },
 
         /**
@@ -217,11 +246,26 @@
             SnakeGraphics.init();
             SnakeWorld.init();
 
-            this.lastTwoDirs = [null, DIRS["RIGHT"]]; // make snake start out going right
+            /* Keep track of the last two directions the snake has moved.
+             * Necessary in order to prevent the snake from turning around
+             * (i.e. going the opposite direction). Here, the snake starts
+             * out going right. */
+            this.lastTwoDirs = [null, DIRS["RIGHT"]];
             $(window).keydown($.proxy(this.onKeyDown, this));
+
+            /* Keep track of score. */
+            this.score = 0;
 
             this.playing = true;
             this.updateFrame();
+        },
+
+        getScore: function() {
+            return this.score;
+        },
+
+        incrementScore: function() {
+            this.score++;
         },
 
         /**
@@ -281,7 +325,7 @@
 
 
     /* Utility Functions */
-    
+
     /**
      * Returns a random integer between min and max
      * Using Math.round() will give you a non-uniform distribution!
@@ -303,7 +347,7 @@
         return Math.floor($(window).width() / TILE_SIZE);
     }
 
-    
+
     /* Constants */
 
     var TILE_SIZE = 20, // width/height of snake/food tiles

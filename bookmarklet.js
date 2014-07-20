@@ -1,7 +1,7 @@
 (function() {
 	function runSnake() {
 		var snakeJS = document.createElement('script');
-		snakeJS.src = 'https://raw.github.com/jlkravitz/snake-js/master/snake.js';
+		snakeJS.src = 'https://rawgit.com/jlkravitz/snake-js/master/snake.js';
 		snakeJS.onload = function() { Snake.run() }; 
 		document.body.appendChild(snakeJS);
 	}

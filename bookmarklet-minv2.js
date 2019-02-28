@@ -1,4 +1,4 @@
-(function() {
+function() {
 	function runSnake() {
 		var snakeJS = document.createElement('script');
 		snakeJS.src = 'https://rawgit.com/jlkravitz/snake-js/master/snake.js';
@@ -14,4 +14,4 @@
 	} else { 
 		runSnake();
 	}
-})()
+)()

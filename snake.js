@@ -265,7 +265,7 @@
         },
 
         incrementScore: function() {
-            this.score++;
+            this.score+2;
         },
 
         /**
@@ -273,13 +273,13 @@
          */
         onKeyDown: function(e) {
 			e.preventDefault();
-            if (e.keyCode == KEYS["UP"]) {
+            if (e.keyCode == KEYS["UP"] && dir != DIRS["DOWN"]) {
                 this.setDir(DIRS["UP"]);
-            } else if (e.keyCode == KEYS["DOWN"]) {
+            } else if (e.keyCode == KEYS["DOWN"] && dir != DIRS["UP"]) {
                 this.setDir(DIRS["DOWN"]);
-            } else if (e.keyCode == KEYS["LEFT"]) {
+            } else if (e.keyCode == KEYS["LEFT"] && dir != DIRS["RIGHT"]) {
                 this.setDir(DIRS["LEFT"]);
-            } else if (e.keyCode == KEYS["RIGHT"]) {
+            } else if (e.keyCode == KEYS["RIGHT"] && dir != DIRS["LEFT"]) {
                 this.setDir(DIRS["RIGHT"]);
             }
         },

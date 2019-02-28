@@ -1,4 +1,4 @@
-snake-js
+snake-js improved
 ========
 
 Play snake on top of any webpage with HTML5 canvas.

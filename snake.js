@@ -273,13 +273,13 @@
          */
         onKeyDown: function(e) {
 			e.preventDefault();
-            if (e.keyCode == KEYS["UP"] && dir != DIRS["DOWN"]) {
+            if (e.keyCode == KEYS["UP"]) {
                 this.setDir(DIRS["UP"]);
-            } else if (e.keyCode == KEYS["DOWN"] && dir != DIRS["UP"]) {
+            } else if (e.keyCode == KEYS["DOWN"]) {
                 this.setDir(DIRS["DOWN"]);
-            } else if (e.keyCode == KEYS["LEFT"] && dir != DIRS["RIGHT"]) {
+            } else if (e.keyCode == KEYS["LEFT"]) {
                 this.setDir(DIRS["LEFT"]);
-            } else if (e.keyCode == KEYS["RIGHT"] && dir != DIRS["LEFT"]) {
+            } else if (e.keyCode == KEYS["RIGHT"]) {
                 this.setDir(DIRS["RIGHT"]);
             }
         },

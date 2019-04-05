@@ -265,7 +265,7 @@
         },
 
         incrementScore: function() {
-            this.score++;
+            this.score+3;
         },
 
         /**
